@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Procesare Date</title>
+</head>
+<body>
+    <h1>Introduceți o listă de numere separate prin virgulă:</h1>
+    <form method="POST">
+        <input type="text" name="data" placeholder="Ex: 1, 2, 3, 4, 5" required>
+        <button type="submit">Procesare</button>
+    </form>
+    
+    {% if result %}
+        {% if result.error %}
+            <p style="color:red;">{{ result.error }}</p>
+        {% else %}
+            <h2>Rezultate:</h2>
+            <ul>
+                <li>Suma: {{ result.sum }}</li>
+                <li>Media: {{ result.average }}</li>
+                <li>Maxim: {{ result.max }}</li>
+                <li>Minim: {{ result.min }}</li>
+            </ul>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
