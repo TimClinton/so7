@@ -2,27 +2,89 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Procesare Date</title>
+    <title>Procesare și Vizualizare Date</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .result-card {
+            margin-top: 20px;
+        }
+        .chart-container {
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Introduceți o listă de numere separate prin virgulă:</h1>
-    <form method="POST">
-        <input type="text" name="data" placeholder="Ex: 1, 2, 3, 4, 5" required>
-        <button type="submit">Procesare</button>
-    </form>
-    
-    {% if result %}
-        {% if result.error %}
-            <p style="color:red;">{{ result.error }}</p>
-        {% else %}
-            <h2>Rezultate:</h2>
-            <ul>
-                <li>Suma: {{ result.sum }}</li>
-                <li>Media: {{ result.average }}</li>
-                <li>Maxim: {{ result.max }}</li>
-                <li>Minim: {{ result.min }}</li>
-            </ul>
+    <div class="container">
+        <h1 class="text-center mb-4">Procesare și Vizualizare Date</h1>
+        <div class="card p-4">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="data" class="form-label">Introduceți o listă de numere separate prin virgulă:</label>
+                    <input type="text" class="form-control" id="data" name="data" placeholder="Ex: 1, 2, 3" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Procesare</button>
+            </form>
+        </div>
+        
+        {% if result %}
+            {% if result.error %}
+                <div class="alert alert-danger result-card" role="alert">
+                    {{ result.error }}
+                </div>
+            {% else %}
+                <div class="card result-card p-4">
+                    <h2 class="mb-3">Rezultate:</h2>
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Suma:</strong> {{ result.sum }}</li>
+                        <li class="list-group-item"><strong>Media:</strong> {{ result.average }}</li>
+                        <li class="list-group-item"><strong>Maxim:</strong> {{ result.max }}</li>
+                        <li class="list-group-item"><strong>Minim:</strong> {{ result.min }}</li>
+                    </ul>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="dataChart"></canvas>
+                </div>
+            {% endif %}
         {% endif %}
+    </div>
+    
+    {% if result and not result.error %}
+        <script>
+            const ctx = document.getElementById('dataChart').getContext('2d');
+            const dataChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ numbers | tojson }},
+                    datasets: [{
+                        label: 'Valori',
+                        data: {{ numbers | tojson }},
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
     {% endif %}
+    
+    <!-- Bootstrap JS (opțional, pentru funcționalități interactive) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
